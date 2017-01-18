@@ -4,7 +4,7 @@
 ## 用户系统
 使用 Http Basic Authorization.
 ### User/Login
-进行登录操作, 返回用户基本信息, 请在执行其他 Api 前先调用本接口, 并在调用其他接口前传递正确的 Authorization.
+进行登录操作, 返回用户基本信息, 请在调用其他 Api 前先调用本接口, 并在调用其他接口前传递正确的 Authorization.
 #### 基本信息
 请求类型: HTTP  
 请求方式: GET  
@@ -12,14 +12,23 @@
 #### 响应数据
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |
-| userName | string | 用户名 |
-| usage | int | 当前已存储文件大小, 单位byte |
-| fileList | array(FileInfo) | 当前根目录文件列表 |
-| -name | string | 文件名 |
-| -objectId | string | 文件ID |
-| -isFolder | boolean | 是否为文件夹 |
-| -size | int | 文件大小 |
-| -uploadTime | string | 上传时间 | 
+| UserName | string | 用户名 |
+| Usage | int | 当前已存储文件大小, 单位 byte |
+| Files | object(FileInfo) | 根目录信息 |
+| -- Id | string | 根目录 ID |
+| -- IsFolder | boolean | 是否为文件夹 |
+| -- Metadata | object(FileMetadata) | 元信息 |
+| ---- Name | string | 根目录名, 应为 ```root``` |
+| ---- Size | int | 文件大小, 不适用于文件夹 |
+| ---- UploadTime | dateTime | 文件夹建立时间 |
+| -- ChildFiles | array(FileInfo) | 子文件夹的文件列表 |
+| ---- Id | string | 文件夹 ID |
+| ---- IsFolder | boolean | 是否为文件夹 |
+| ---- Metadata | object(FileMetaData) | 元信息 |
+| ------ Name | string | 文件夹名 |
+| ------ Size | int | 文件大小, 不适用于文件夹 |
+| ------ UploadTime | dateTime | 文件夹建立时间 |
+| ---- ChildFiles | array(FileInfo) | 应为空, 子文件列表 |
 #### 请参阅
 [Add support for basic auth by zcbenz · Pull Request #3250 · electron/electron](https://github.com/electron/electron/pull/3250) 
 
@@ -33,16 +42,24 @@
 #### 请求数据
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |
-| objectId | string | 文件ID, 要求为文件夹, 为空则返回根目录 |
+| folderId | string | 文件 ID, 要求为文件夹, 为空则返回根目录 |
 #### 响应数据
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |
-| fileList | array(FileInfo) | 当前文件夹的文件列表 |
-| -name | string | 文件名 |
-| -objectId | string | 文件ID |
-| -isFolder | boolean | 是否为文件夹 |
-| -size | int | 文件大小 |
-| -uploadTime | string | 上传时间 | 
+| Id | string | 文件夹 ID |
+| IsFolder | boolean | 是否为文件夹 |
+| Metadata | object(FileMetadata) | 元信息 |
+| -- Name | string | 文件夹名 |
+| -- Size | int | 文件大小, 不适用于文件夹 |
+| -- UploadTime | DateTime | 文件夹建立时间 |
+| ChildFiles | array(FileInfo) | 当前文件夹的文件列表 |
+| -- Id | string | 文件夹 ID |
+| -- IsFolder | boolean | 是否为文件夹 |
+| -- Metadata | object(FileMetadata) | 元信息 |
+| ---- Name | string | 文件夹名 |
+| ---- Size | int | 文件大小, 不适用于文件夹 |
+| ---- UploadTime | DateTime | 文件夹建立时间 |
+| ---- ChildFiles | array(FileInfo) | 应为空, 子文件列表 |
 
 ### File/Upload
 上传文件.
