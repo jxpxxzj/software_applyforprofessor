@@ -246,7 +246,7 @@
 | -uploadTime | string | 上传时间 | 
 
 
-### File/NewFolder
+### File/CreateFolder
 创建新文件夹.
 #### 基本信息
 请求类型: HTTP  
@@ -256,7 +256,7 @@
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |
 | objectId | string | 母文件ID, 要求为文件夹, 为空则在根目录创建 |
-| folderName | string | 文件夹名 |
+| name | string | 文件夹名 |
 #### 响应数据
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |

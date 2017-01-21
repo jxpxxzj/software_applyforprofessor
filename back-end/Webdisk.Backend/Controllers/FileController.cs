@@ -83,8 +83,6 @@ namespace Webdisk.Backend.Controllers
             return this.CurrentUser().GetFolder(string.IsNullOrEmpty(objectId) ? this.CurrentUser().Files.Id : new ObjectId(objectId));
         }
 
-
-
         [HttpGet]
         public Models.FileInfo Rename(string objectId, string newFilename)
         {
