@@ -5,9 +5,9 @@
 - 请勿在仓库代码中储存connection_string等敏感信息, 必要时使用.gitignore过滤.
 
 ## 说明
-/docs : 开发文档
-/front-end : 前端代码
-/back-end : 后端代码
+/docs : 开发文档  
+/front-end : 前端代码  
+/back-end : 后端代码  
 ## 技术栈
 ### 前端
 [jxpxxzj/vue-desktop-framework: A framework for making hybrid desktop app powered by electron and vue.](https://github.com/jxpxxzj/vue-desktop-framework)

@@ -255,17 +255,25 @@
 #### 请求参数
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |
-| objectId | string | 母文件ID, 要求为文件夹, 为空则在根目录创建 |
+| objectId | string | 母文件ID, 要求为文件夹, ID不存在则在根目录创建 |
 | name | string | 文件夹名 |
 #### 响应数据
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |
-| fileList | array(FileInfo) | 当前文件夹的文件列表 |
-| -name | string | 文件名 |
-| -objectId | string | 文件ID |
-| -isFolder | boolean | 是否为文件夹 |
-| -size | int | 文件大小 |
-| -uploadTime | string | 上传时间 | 
+| Id | string | 文件夹 ID |
+| IsFolder | boolean | 是否为文件夹 |
+| Metadata | object(FileMetadata) | 元信息 |
+| -- Name | string | 文件夹名 |
+| -- Size | int | 文件大小, 不适用于文件夹 |
+| -- UploadTime | DateTime | 文件夹建立时间 |
+| ChildFiles | array(FileInfo) | 当前文件夹的文件列表 |
+| -- Id | string | 文件夹 ID |
+| -- IsFolder | boolean | 是否为文件夹 |
+| -- Metadata | object(FileMetadata) | 元信息 |
+| ---- Name | string | 文件夹名 |
+| ---- Size | int | 文件大小, 不适用于文件夹 |
+| ---- UploadTime | DateTime | 文件夹建立时间 |
+| ---- ChildFiles | array(FileInfo) | 应为空, 子文件列表 |
 
 ### File/Search
 按指定关键词搜索文件.
