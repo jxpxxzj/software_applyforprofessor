@@ -1,5 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Webdisk.Backend.Models;
 
@@ -72,6 +74,20 @@ namespace Webdisk.Backend.Helpers
                     return result;
             }
             return null;
+        }
+
+        public static List<FileInfo> FindFile(FileInfo folder, Predicate<FileInfo> predicate)
+        {
+            var list = new List<FileInfo>();
+            var files = folder.ChildFiles.FindAll(predicate);
+            list.AddRange(files.Select(x => x.CreateNonChildFileInfo()));
+            var folders = folder.ChildFiles.Where(f => f.IsFolder);
+            foreach(var p in folders)
+            {
+                var result = FindFile(p, predicate);
+                list.AddRange(result.Select(x => x.CreateNonChildFileInfo()));
+            }
+            return list;
         }
     }
 }

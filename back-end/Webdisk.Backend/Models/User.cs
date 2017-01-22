@@ -4,6 +4,7 @@ using MongoDB.Driver.GridFS;
 using MongoDB.Driver.Linq;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Webdisk.Backend.Helpers;
 
@@ -188,6 +189,14 @@ namespace Webdisk.Backend.Models
                 saveUserData();
             }
         }
+
+        public List<FileInfo> Search(string keywords, int limit, int skip)
+        {
+            var result = FileHelper.FindFile(Files, f => f.Metadata.Name.Contains(keywords));
+            return result.GetRange(skip, limit);
+        }
+
+
 
         /// <summary>
         /// 保存用户数据

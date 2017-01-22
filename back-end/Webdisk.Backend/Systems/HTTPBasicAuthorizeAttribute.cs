@@ -12,7 +12,6 @@ namespace Webdisk.Backend.Systems
         {
             if (actionContext.Request.Headers.Authorization != null)
             {
-                //用户验证逻辑
                 if (UserHelper.GetByAuth(actionContext.Request.Headers.Authorization.Parameter) != null)
                 {
                     IsAuthorized(actionContext);

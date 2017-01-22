@@ -14,6 +14,7 @@ namespace Webdisk.Backend.Controllers
 {
     public class FileController : ApiController
     {
+        Func<int,int> func = x => x+1;
         [HTTPBasicAuthorize]
         public async Task<HttpResponseMessage> Upload()
         {
@@ -123,7 +124,14 @@ namespace Webdisk.Backend.Controllers
                 this.CurrentUser().CreateFolder(parentId, name);
                 return this.CurrentUser().GetFolder(parentId);
             }
-
         }
+
+        [HttpGet]
+        [HTTPBasicAuthorize]
+        public List<Models.FileInfo> Search(string keywords,int limit = 100, int skip = 0)
+        {
+            return this.CurrentUser().Search(keywords, limit, skip);
+        }
+
     }
 }

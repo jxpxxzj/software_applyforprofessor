@@ -87,5 +87,17 @@ namespace Webdisk.Backend.Models
             ChildFiles.Add(folder);
             return folder;
         }
+
+        public FileInfo CreateNonChildFileInfo()
+        {
+            var f = new FileInfo()
+            {
+                Id = Id,
+                IsFolder = IsFolder,
+                Metadata = Metadata,
+                Parent = Parent
+            };
+            return f;
+        }
     }
 }
