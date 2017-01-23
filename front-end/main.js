@@ -1,10 +1,12 @@
 // Basic init
 const electron = require('electron');
 const { app, BrowserWindow } = electron;
-const storage = require('electron-json-storage');
 
 // Let electron reloads by itself when webpack watches changes in ./app/
-require('electron-reload')(__dirname);
+if (process.env.NODE_ENV === 'development') {
+    require('electron-reload')(__dirname);
+}
+
 
 // To avoid being garbage collected
 let mainWindow;
@@ -25,9 +27,10 @@ app.on('ready', () => {
 
     // Remove default menu
     mainWindow.setMenu(null);
-
-    // Open Chrome Dev Tools
-    mainWindow.openDevTools();
+    if (process.env.NODE_ENV === 'development') {
+        // Open Chrome Dev Tools
+        mainWindow.openDevTools();
+    }
 
     mainWindow.on('closed', () => {
         // Dereference the window object, usually you would store windows
@@ -39,5 +42,5 @@ app.on('ready', () => {
 
 app.on('login', (event, webContents, request, authInfo, callback) => {
     event.preventDefault();
-    callback(storage.get('user').username, storage.get('user').password);
+    callback('Parry', '123456');
 });

@@ -1,14 +1,15 @@
 {
-  "name": "vue-desktop-framework",
+  "name": "Webdisk",
   "version": "1.0.0",
-  "description": "A framework for making hybrid desktop app powered by electron and vue.",
+  "description": "Webdisk front-end",
   "main": "main.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development && webpack",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "cross-env NODE_ENV=PRODUCTION && webpack --progress --config webpack.release.config.js && electron-packager . App --plantform=win32 --out=./package --ignore=node_modules/electron-* --arch=ia32 --prune --ignore=app/src --ignore=docs --ignore=.git --ignore=README.md --ignore=debug.log --ignore=LICENSE --ignore=.eslintrc --ignore=.gitignore --ignore=webpack.config.js --ignore=webpack.release.config.js --ignore=.vscode --overwrite --asar=true --download.mirror=https://npm.taobao.org/mirrors/electron/"
   },
   "author": "Zijin Xiao <ZijinX@outlook.com>",
-  "repository": "jxpxxzj/vue-desktop-framework",
+  "repository": "jxpxxzj/software_applyforprofessor",
   "license": "MIT",
   "dependencies": {
     "electron-json-storage": "^2.1.0",
@@ -27,6 +28,7 @@
     "cross-env": "^3.1.3",
     "css-loader": "^0.25.0",
     "electron": "^1.4.3",
+    "electron-packager": "^8.5.1",
     "electron-reload": "^1.0.2",
     "eslint": "^3.12.2",
     "eslint-config-vue": "^2.0.1",
