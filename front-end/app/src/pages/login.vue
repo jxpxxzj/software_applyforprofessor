@@ -1,0 +1,76 @@
+<template>
+    <div class="login-background">
+        <div class="login-container">
+            <router-link :to="{ path:'/'}">Index</router-link>
+            <el-row type="flex" justify="center">
+                <img src="../assets/cloud_disk.png" class="login-logo">
+            </el-row>
+            <el-row>
+                <el-input size="large" class="login-input-username" v-model="input3">
+                    <template slot="prepend">用户名</template>
+                </el-input>
+            </el-row>
+            <el-row>
+                <el-input size="large" class="login-input-password" v-model="input3" type="password">
+                    <template slot="prepend">密码</template>
+                 </el-input>
+            </el-row>
+            <el-row type="flex" justify="space-around">
+                <el-button size="large">注册</el-button>
+                <el-button size="large" type="primary">登录</el-button>
+            </el-row>
+        </div>
+    </div>
+</template>
+<script>
+export default {
+    data () {
+        return {
+            username: '',
+            password: '',
+        }
+    },
+    methods: {
+        login() {
+            this.$storage.set('user', { username: this.username, password: this.password });
+            
+        }
+    }
+}
+</script>
+<style scoped>
+body
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin: auto;
+}
+#app
+{
+    height: 100%;
+    text-align: center;
+    width: 100%;
+}
+.login-background
+{
+    height: 100%;
+    background-image: url(../assets/login-bg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.login-container
+{
+    margin: auto;
+    max-width: 600px;
+    position: absolute;  
+    top: 0; left: 0; bottom: 0; right: 0; 
+    height: auto;
+}
+.login-logo 
+{
+    width: auto;
+    height: 150px;
+}
+</style>

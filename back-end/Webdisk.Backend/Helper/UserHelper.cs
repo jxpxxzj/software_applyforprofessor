@@ -50,11 +50,7 @@ namespace Webdisk.Backend.Helpers
                         where p.Password == CryptoHelper.GetMd5String(password)
                         select p;
             var result = query.ToList();
-            if (result.Count > 0)
-            {
-                return result.First();
-            }
-            return null;
+            return result.FirstOrDefault();
         }
 
         /// <summary>

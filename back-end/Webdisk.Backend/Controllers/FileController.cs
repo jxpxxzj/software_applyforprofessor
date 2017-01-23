@@ -14,7 +14,6 @@ namespace Webdisk.Backend.Controllers
 {
     public class FileController : ApiController
     {
-        Func<int,int> func = x => x+1;
         [HTTPBasicAuthorize]
         public async Task<HttpResponseMessage> Upload()
         {
@@ -79,12 +78,14 @@ namespace Webdisk.Backend.Controllers
         }
 
         [HttpGet]
+        [HTTPBasicAuthorize]
         public Models.FileInfo GetFolder(string objectId = "")
         {
             return this.CurrentUser().GetFolder(string.IsNullOrEmpty(objectId) ? this.CurrentUser().Files.Id : new ObjectId(objectId));
         }
 
         [HttpGet]
+        [HTTPBasicAuthorize]
         public Models.FileInfo Rename(string objectId, string newFilename)
         {
             this.CurrentUser().Rename(new ObjectId(objectId), newFilename);
@@ -92,6 +93,7 @@ namespace Webdisk.Backend.Controllers
         }
 
         [HttpGet]
+        [HTTPBasicAuthorize]
         public Models.FileInfo Delete(string objectId)
         {
             var folder = this.CurrentUser().GetParentFolder(new ObjectId(objectId));
@@ -101,6 +103,7 @@ namespace Webdisk.Backend.Controllers
         }
 
         [HttpGet]
+        [HTTPBasicAuthorize]
         public Models.FileInfo CreateFolder(string objectId, string name)
         {
             Models.FileInfo tryf = null;
