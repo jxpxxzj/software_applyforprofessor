@@ -2,6 +2,7 @@ import Index from './pages/index.vue';
 import NotFound from './pages/notFound.vue';
 import Page from './pages/page.vue';
 import Login from './pages/login.vue';
+import Home from './pages/home.vue';
 
 export default [
     {
@@ -18,6 +19,11 @@ export default [
         path: '/login',
         name: 'login',
         component: Login
+    },
+    {
+        path: '/home',
+        name: 'home',
+        component: Home
     },
     {
         path: '*',

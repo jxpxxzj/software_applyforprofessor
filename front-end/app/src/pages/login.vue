@@ -6,18 +6,18 @@
                 <img src="../assets/cloud_disk.png" class="login-logo">
             </el-row>
             <el-row>
-                <el-input size="large" class="login-input-username" v-model="input3">
+                <el-input size="large" class="login-input-username" placeholder="Parry" :disabled=true>
                     <template slot="prepend">用户名</template>
                 </el-input>
             </el-row>
             <el-row>
-                <el-input size="large" class="login-input-password" v-model="input3" type="password">
+                <el-input size="large" class="login-input-password" type="password" placeholder="123456" :disabled=true>
                     <template slot="prepend">密码</template>
                  </el-input>
             </el-row>
             <el-row type="flex" justify="space-around">
                 <el-button size="large">注册</el-button>
-                <el-button size="large" type="primary">登录</el-button>
+                <el-button size="large" type="primary" @click="login">登录</el-button>
             </el-row>
         </div>
     </div>
@@ -32,8 +32,7 @@ export default {
     },
     methods: {
         login() {
-            this.$storage.set('user', { username: this.username, password: this.password });
-            
+            this.$router.push({ path: '/home'});
         }
     }
 }

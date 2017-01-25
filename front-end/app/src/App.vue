@@ -36,4 +36,5 @@ window.addEventListener('mousewheel', (e) => {
         e.preventDefault();
     }
 });
+
 </script>

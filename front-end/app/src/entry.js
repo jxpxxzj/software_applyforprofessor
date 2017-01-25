@@ -10,6 +10,8 @@ Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(Vuex);
 
+Vue.http.headers.common['Authorization'] = 'Basic UGFycnk6MTIzNDU2';
+
 // UI library
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';
