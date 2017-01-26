@@ -62,7 +62,7 @@ namespace Webdisk.Backend.Models
         /// <returns></returns>
         public FileInfo CreateFolder(ObjectId parent, string name)
         {
-            var folder = GetParentFolder(parent);
+            var folder = FileHelper.FindFolder(Files,parent);
             folder.CreateFolder(name);
             saveUserData();
             return folder;

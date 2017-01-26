@@ -13,20 +13,26 @@
             </el-col>
         </el-row>
         <el-row class="home-path-container">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item>网盘</el-breadcrumb-item>
-                <el-breadcrumb-item>root</el-breadcrumb-item>
-            </el-breadcrumb>      
+            <span>
+                <span v-if="parent != '000000000000000000000000'">
+                    <el-button size="small" @click="folderClick(parent)">向上</el-button>
+                </span>
+                <span v-else>
+                    <el-button size="small" :disabled="true">向上</el-button>
+                </span>
+            </span>
+            {{ currentFolder }}
         </el-row>          
         <el-row class="home-data-container">
             <el-table :data="fileData" border style="width: 100%" v-loading.body="fileLoading" element-loading-text="拼命加载中" :default-sort = "{prop: 'IsFolder', order: 'descending'}">
                 <el-table-column sortable label="文件名" width="120">
                     <template scope="scope">
                         <el-icon name="document" v-if="!scope.row.IsFolder"></el-icon>
-                        {{ scope.row.Metadata.Name }}
+                        <el-button type="text" v-if="scope.row.IsFolder" @click="folderClick(scope.row.Id)">{{ scope.row.Metadata.Name }}</el-button>
+                        <div v-else>{{ scope.row.Metadata.Name }}</div>
                     </template>
                 </el-table-column>
-                <el-table-column sortable label="大小" width="120">
+                <el-table-column sortable prop="IsFolder" label="大小" width="120">
                     <template scope="scope">
                         <div v-if="scope.row.IsFolder">
                             -
@@ -36,7 +42,7 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column sortable label="修改时间">
+                <el-table-column label="修改时间">
                      <template scope="scope">
                         {{ scope.row.Metadata.UploadTime.replace('T',' ').replace('Z','') }}
                     </template>
@@ -71,6 +77,7 @@
     padding-top: 15px;
     padding-bottom: 15px;
     padding-left: 10px;
+    padding-right: 10px;
     position: fixed;
     z-index: 999;
     background-color: #f9fafc;
@@ -81,7 +88,6 @@
     margin-top: 66px;
     height: 20px;
     min-height: 20px;
-    text-align: center;
     width: 100%;
     position: fixed;
     z-index: 999;
@@ -97,6 +103,8 @@ export default {
     data () {
         return {
             fileData: [],
+            currentFolder: '',
+            parent: '',
             keywords: '',
             uploadVisible: false,
             folder:'14d1908575be46c2bc4e01c2',
@@ -104,15 +112,18 @@ export default {
         }
     },
     created() {
-        this.fetchData();
+        this.fetchData(this.folder);
     },
     methods: {
-        fetchData() { 
+        fetchData(fo = this.folder) { 
             this.fileLoading = true;
-            this.$http.get("http://localhost:7308/api/File/GetFolder?")
+            this.$http.get("http://localhost:7308/api/File/GetFolder?objectId=" + fo)
             .then((response) => {
                 const result = response.json().then((value) => {
+                    console.log(value);
                     this.fileData = value.ChildFiles;
+                    this.currentFolder = value.Metadata.Name;
+                    this.parent = value.Parent;
                 });
                 this.fileLoading = false;
             });
@@ -125,7 +136,8 @@ export default {
                 inputErrorMessage: '文件夹名格式不正确'
                 })
             .then(({ value }) => {
-                this.$http.get("http://localhost:7308/api/File/CreateFolder?objectId=root&name=" + value )
+                console.log(this.folder);
+                this.$http.get('http://localhost:7308/api/File/CreateFolder?objectId=' + this.folder + '&name=' + value)
                 .then((response) => {
                     this.$message({
                         type: 'success',
@@ -133,7 +145,9 @@ export default {
                     });
                     this.fetchData();        
                 })
-                
+            })
+            .catch(() => {
+
             });
         },
         upload_onprogress(event, file, fileList) {
@@ -146,6 +160,32 @@ export default {
             n.onclick = () => {
                 
             };
+            this.fetchData();
+        },
+        handleDelete(index, row) {
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            })
+            .then(() => {
+                this.$http.get('http://localhost:7308/api/File/Delete?objectId=' + row.Id)
+                .then((response) => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                    this.fetchData();        
+                }) 
+            })
+            .catch(() => {
+
+            });
+        },
+        folderClick(id) {
+            console.log(id);
+            this.parent = this.folder;
+            this.folder = id;
             this.fetchData();
         }
     }

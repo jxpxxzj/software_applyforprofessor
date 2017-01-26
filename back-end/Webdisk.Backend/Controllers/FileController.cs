@@ -81,7 +81,14 @@ namespace Webdisk.Backend.Controllers
         [HTTPBasicAuthorize]
         public Models.FileInfo GetFolder(string objectId = "")
         {
-            return this.CurrentUser().GetFolder(string.IsNullOrEmpty(objectId) ? this.CurrentUser().Files.Id : new ObjectId(objectId));
+            try
+            {
+                return this.CurrentUser().GetFolder(new ObjectId(objectId));
+            }
+            catch
+            {
+                return this.CurrentUser().GetFolder(this.CurrentUser().Files.Id);
+            }
         }
 
         [HttpGet]
