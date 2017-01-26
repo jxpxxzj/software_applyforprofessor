@@ -51,6 +51,7 @@
                 <el-table-column label="操作">
                     <template scope="scope">
                         <el-button v-if="!scope.row.IsFolder" size="small" type="primary" @click="handleDownload(scope.$index, scope.row)">下载</el-button>
+                        <el-button size="small" @click="handleRename(scope.$index,scope.row)">重命名</el-button>
                         <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -74,10 +75,31 @@
 
         <el-dialog title="关于" v-model="aboutVisible" size="medium">
             <h2 class="home-about-title">Webdisk</h2>
-            Version 1.0.0<br>
+            Version {{ this.$electron.remote.app.getVersion() }}<br>
             Shell {{ process.versions['atom-shell'] }}<br>
             Renderer {{ process.versions.chrome }}<br>
             Node {{ process.versions.node }}<br>
+        </el-dialog>
+
+        <el-dialog title="设置" v-model="settingsVisible" size="full" v-on:open="onSettingsOpen" v-on:close="onSettingsClose">
+            <el-tabs>
+                <el-tab-pane label="下载" name="first">
+                    <el-row :gutter="20">
+                        <el-col :span="15">
+                            <el-input v-model="downloadPath">
+                                <template slot="prepend">下载路径</template>
+                            </el-input>
+                        </el-col>
+                        <el-col :span="9">
+                            <el-button @click="settings_select">浏览...</el-button>
+                            <el-button @click="settings_defaultPath">默认路径</el-button>
+                        </el-col>
+                    </el-row>
+                </el-tab-pane>
+                <el-tab-pane label="通知" name="second">
+                    下载或上传完成时发送通知&nbsp; <el-switch v-model="enableNotification" @change="settings_notification"></el-switch>
+                </el-tab-pane>
+            </el-tabs>
         </el-dialog>
     </div>
 </template>
@@ -122,10 +144,13 @@ export default {
             keywords: '',
             uploadVisible: false,
             aboutVisible: false,
+            settingsVisible:false,
             folder:'14d1908575be46c2bc4e01c2',
             fileLoading: true,
             menu: null,
-            process: window.process
+            process: window.process,
+            downloadPath: '',
+            enableNotification: false
         }
     },
     created() {
@@ -136,7 +161,7 @@ export default {
         this.menu = new Menu();
         const vm = this;
         this.menu.append(new MenuItem({ label: '设置', click() { 
-                console.log('item 1 clicked'); 
+                vm.settingsVisible = true;
             } 
         }));
         this.menu.append(new MenuItem({ label: '显示开发者工具', click() { 
@@ -188,11 +213,36 @@ export default {
         },
         upload_onsuccess (response, file, fileList) {
             this.$electron.remote.getCurrentWindow().setProgressBar(0);  
-            const n = new window.Notification('Webdisk', { body: '上传完成' });
-            n.onclick = () => {
-                
-            };
+            if(this.$store.state.settings.enableNotification) {
+                const n = new window.Notification('Webdisk', { body: '上传完成' });
+                n.onclick = () => {
+                    
+                };
+            }
             this.fetchData();
+        },
+        handleDownload(index,row) {
+
+        },
+        handleRename(index,row) {
+            this.$prompt('请输入新文件名', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                inputPlaceholder: row.Metadata.Name
+                })
+            .then(({ value }) => {
+                this.$http.get('http://localhost:7308/api/File/Rename?objectId=' + row.Id + '&newFilename=' + value)
+                .then((response) => {
+                    this.$message({
+                        type: 'success',
+                        message: '重命名成功.'
+                    });
+                    this.fetchData();        
+                })
+            })
+            .catch(() => {
+
+            });
         },
         handleDelete(index, row) {
             this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -205,6 +255,8 @@ export default {
                 .then((response) => {
                     this.$message({
                         type: 'success',
+                        showClose: true,
+                        duration: 1500,
                         message: '删除成功!'
                     });
                     this.fetchData();        
@@ -221,6 +273,39 @@ export default {
         },
         openMenu() {
             this.menu.popup(this.$electron.remote.getCurrentWindow(),293,51);
+        },  
+        onSettingsClose() {
+            this.$store.commit('saveSettings');
+            this.$message({
+                type: 'success',
+                showClose: true,
+                duration: 1500,
+                message: '设置已保存.'
+            });
+        },
+        onSettingsOpen() {
+            this.$store.commit('initSettings');
+            this.downloadPath = this.$store.state.settings.downloadPath;
+            this.enableNotification = this.$store.state.settings.enableNotification;
+        },
+        settings_select() {
+            this.$electron.remote.dialog.showOpenDialog({
+                properties: ['openDirectory']
+            },(filename) => {
+                if (filename === undefined) {
+                    return;
+                }
+                this.downloadPath = filename[0];
+                this.$store.commit('setDownloadPath',this.downloadPath);
+            });
+        },
+        settings_defaultPath() {
+            this.downloadPath = this.$electron.remote.app.getPath('downloads');
+            this.$store.commit('setDownloadPath',this.downloadPath);
+        },
+        settings_notification(value) {
+            this.enableNotification = value;
+            this.$store.commit('setEnableNotification',this.enableNotification);
         }
     }
 }

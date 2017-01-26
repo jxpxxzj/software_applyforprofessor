@@ -41,3 +41,8 @@ var Entry = new Vue({
     router, store
 });
 Entry.$mount('#app');
+Entry.$store.commit('initStore', {
+    storage: Entry.$storage,
+    electron: Entry.$electron
+});
+Entry.$store.commit('initSettings');

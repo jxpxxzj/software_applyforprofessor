@@ -12,8 +12,10 @@
   "repository": "jxpxxzj/software_applyforprofessor",
   "license": "MIT",
   "dependencies": {
-    "electron-json-storage": "^2.1.0",
-    "element-ui": "^1.0.9",
+    "electron-json-storage": "^3.0.0",
+    "element-ui": "^1.1.6",
+    "eslint": "^3.14.1",
+    "eslint-config-vue": "^2.0.2",
     "fs-extra": "^1.0.0",
     "jquery": "^3.1.1",
     "normalize.css": "^5.0.0",
@@ -22,7 +24,7 @@
     "vue-resource": "^1.0.3",
     "vue-router": "^2.1.1",
     "vuex": "^2.1.1",
-    "vuex-router-sync": "^4.0.2"
+    "vuex-router-sync": "^4.1.2"
   },
   "devDependencies": {
     "cross-env": "^3.1.3",
