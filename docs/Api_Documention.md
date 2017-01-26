@@ -203,64 +203,6 @@
 #### 请参阅
 [Deleting and Renaming Files](https://mongodb.github.io/mongo-csharp-driver/2.2/reference/gridfs/deletingandrenamingfiles/)
 
-### File/Move
-移动文件, 可以移动文件或文件夹.
-#### 基本信息
-请求类型: HTTP  
-请求方式: POST  
-响应类型: application/json
-#### 请求参数
-| 参数名称 | 类型 | 描述 |
-| ------- | ---- | --- |
-| objectId | string | 要移动的文件ID |
-| targetId | string | 要移动到的文件夹, 要求为文件夹 |
-#### 响应数据
-| 参数名称 | 类型 | 描述 |
-| ------- | ---- | --- |
-| Id | string | 目标文件夹 ID |
-| IsFolder | boolean | 是否为文件夹 |
-| Metadata | object(FileMetadata) | 元信息 |
-| -- Name | string | 文件夹名 |
-| -- Size | int | 文件大小, 不适用于文件夹 |
-| -- UploadTime | DateTime | 文件夹建立时间 |
-| ChildFiles | array(FileInfo) | 目标文件夹的文件列表 |
-| -- Id | string | 文件夹 ID |
-| -- IsFolder | boolean | 是否为文件夹 |
-| -- Metadata | object(FileMetadata) | 元信息 |
-| ---- Name | string | 文件夹名 |
-| ---- Size | int | 文件大小, 不适用于文件夹 |
-| ---- UploadTime | DateTime | 文件夹建立时间 |
-| ---- ChildFiles | array(FileInfo) | 应为空, 子文件列表 |
-
-### File/Copy
-复制文件, 可以复制文件或文件夹.
-#### 基本信息
-请求类型: HTTP  
-请求方式: POST  
-响应类型: application/json
-#### 请求参数
-| 参数名称 | 类型 | 描述 |
-| ------- | ---- | --- |
-| objectId | string | 要复制的文件ID |
-| targetId | string | 要复制到的文件夹, 要求为文件夹 |
-#### 响应数据
-| 参数名称 | 类型 | 描述 |
-| ------- | ---- | --- |
-| Id | string | 目标文件夹 ID |
-| IsFolder | boolean | 是否为文件夹 |
-| Metadata | object(FileMetadata) | 元信息 |
-| -- Name | string | 文件夹名 |
-| -- Size | int | 文件大小, 不适用于文件夹 |
-| -- UploadTime | DateTime | 文件夹建立时间 |
-| ChildFiles | array(FileInfo) | 目标文件夹的文件列表 |
-| -- Id | string | 文件夹 ID |
-| -- IsFolder | boolean | 是否为文件夹 |
-| -- Metadata | object(FileMetadata) | 元信息 |
-| ---- Name | string | 文件夹名 |
-| ---- Size | int | 文件大小, 不适用于文件夹 |
-| ---- UploadTime | DateTime | 文件夹建立时间 |
-| ---- ChildFiles | array(FileInfo) | 应为空, 子文件列表 |
-
 ### File/CreateFolder
 创建新文件夹.
 #### 基本信息

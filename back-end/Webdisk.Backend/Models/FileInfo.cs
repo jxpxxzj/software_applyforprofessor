@@ -58,6 +58,11 @@ namespace Webdisk.Backend.Models
         public FileMetadata Metadata;
 
         /// <summary>
+        /// 仅用于前端, 实现进度显示
+        /// </summary>
+        public int progress;
+
+        /// <summary>
         /// 添加文件
         /// </summary>
         /// <param name="fi">GridFS 文件信息</param>

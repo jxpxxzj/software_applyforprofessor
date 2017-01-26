@@ -54,6 +54,8 @@
                         <el-button v-if="!scope.row.IsFolder" size="small" type="primary" @click="handleDownload(scope.$index, scope.row)">下载</el-button>
                         <el-button size="small" @click="handleRename(scope.$index,scope.row)">重命名</el-button>
                         <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-progress id="prog" :percentage="scope.row.progress" v-if="scope.row.progress !== 0 && scope.row.progress !== 100"></el-progress>
+                        <el-progress :percentage="scope.row.progress" v-if="scope.row.progress !== 0 && scope.row.progress === 100.0" status="success"></el-progress>
                     </template>
                 </el-table-column>
             </el-table>
@@ -76,6 +78,7 @@
 
         <el-dialog title="关于" v-model="aboutVisible" size="medium">
             <h2 class="home-about-title">Webdisk</h2>
+            Powered by <a class="home-about-link" @click="openLink('https://github.com/jxpxxzj/vue-desktop-framework')">vue-desktop-framework</a><br>
             Version {{ this.$electron.remote.app.getVersion() }}<br>
             Shell {{ process.versions['atom-shell'] }}<br>
             Renderer {{ process.versions.chrome }}<br>
@@ -94,11 +97,12 @@
                         <el-col :span="9">
                             <el-button @click="settings_select">浏览...</el-button>
                             <el-button @click="settings_defaultPath">默认路径</el-button>
+                            <el-button @click="openLink('this.$store.state.settings.downloadPath')">打开文件夹</el-button>
                         </el-col>
                     </el-row>
                 </el-tab-pane>
                 <el-tab-pane label="通知" name="second">
-                    下载或上传完成时发送通知&nbsp; <el-switch v-model="enableNotification" @change="settings_notification"></el-switch>
+                    下载或上传完成时发送系统通知&nbsp; <el-switch v-model="enableNotification" @change="settings_notification"></el-switch>
                 </el-tab-pane>
             </el-tabs>
         </el-dialog>
@@ -134,6 +138,11 @@
 {
     color:#1d8ce0;
 }
+.home-about-link
+{
+    color:#1d8ce0;
+    text-decoration: underline;
+}
 </style>
 <script>
 export default {
@@ -153,29 +162,34 @@ export default {
             menu: null,
             process: window.process,
             downloadPath: '',
-            enableNotification: false
+            enableNotification: false,
+            _fileProgress:[]
         }
     },
     created() {
         this.fetchData(this.folder);
+        if(this._fileProgress === undefined) {
+            this._fileProgress = {};
+        }
         const remote = this.$electron.remote;
         const Menu = remote.Menu;
         const MenuItem = remote.MenuItem;
         this.menu = new Menu();
         const vm = this;
+        this.menu.append(new MenuItem({ label: '打开下载目录', click() { 
+            vm.openLink(vm.$store.state.settings.downloadPath)
+        }}));
+        this.menu.append(new MenuItem({ type: 'separator' }));
         this.menu.append(new MenuItem({ label: '设置', click() { 
-                vm.settingsVisible = true;
-            } 
-        }));
+            vm.settingsVisible = true;
+        }}));
         this.menu.append(new MenuItem({ label: '显示开发者工具', click() { 
-                remote.getCurrentWindow().openDevTools();
-            } 
-        }));
+            remote.getCurrentWindow().openDevTools();
+        }}));
         this.menu.append(new MenuItem({ type: 'separator' }));
         this.menu.append(new MenuItem({ label: '关于', click() { 
-                vm.aboutVisible = true;
-            } 
-        }));
+            vm.aboutVisible = true;
+        }}));
     },
     methods: {
         fetchData(fo = this.folder) { 
@@ -226,7 +240,41 @@ export default {
             this.fetchData();
         },
         handleDownload(index,row) {
-
+            this.$progress(this.$request('http://localhost:7308/api/File/Download?objectId=' + row.Id))
+            .auth('Parry', '123456', true)
+            .on( 'response', (res) => {
+                row.progress = 1;
+                const contentDisposition = res.headers['content-disposition'];
+                const match = contentDisposition && contentDisposition.match(/(filename=|filename\*='')(.*)$/);
+                const fnt = match && match[2] || 'default-filename.out';
+                const filename = fnt.split(';')[0];
+                const fws = this.$fs.createWriteStream(this.$path.join(this.$store.state.settings.downloadPath,filename));
+                res.pipe( fws );
+             })
+            .on('progress', (state) => {
+                if (state.percent !== undefined) {
+                    row.progress = Math.round(state.percent * 100.0);
+                    this.$electron.remote.getCurrentWindow().setProgressBar(state.percent);
+                }
+                //this.speed = (state.speed / 1000).toFixed(2);
+                //if (state.time.remaining !== null) {
+                    //this.remaining = state.time.remaining.toFixed(2);
+                //}
+            })
+            .on('error', (error) => {
+                console.error(error);
+            })
+            .on('end', () => {
+                row.progress = 100;
+                this.$electron.remote.getCurrentWindow().setProgressBar(0);
+                if(this.$store.state.settings.enableNotification) {
+                    const n = new window.Notification('Webdisk', { body: '下载完成' });
+                    n.onclick = () => {
+                        
+                    };        
+                }
+            });
+            
         },
         handleRename(index,row) {
             this.$prompt('请输入新文件名', '提示', {
@@ -326,6 +374,9 @@ export default {
             .catch(() => {
 
             });
+        },
+        openLink(url) {
+            this.$electron.shell.openExternal(url);
         }
     }
 }
