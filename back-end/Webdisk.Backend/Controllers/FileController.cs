@@ -25,7 +25,7 @@ namespace Webdisk.Backend.Controllers
 
             // Prepare CustomMultipartFormDataStreamProvider in which our multipart form  
             // data will be loaded.  
-            var fileSaveLocation = @"E:\MongoTest\uploadCache";
+            var fileSaveLocation = @"C:\uploadCache";
             var provider = new FileMultipartFormDataStreamProvider(fileSaveLocation);
             var ids = new List<ObjectId>();
 
