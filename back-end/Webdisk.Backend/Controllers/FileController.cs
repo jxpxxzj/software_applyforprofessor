@@ -138,8 +138,9 @@ namespace Webdisk.Backend.Controllers
 
         [HttpGet]
         [HTTPBasicAuthorize]
-        public List<Models.FileInfo> Search(string keywords,int limit = 100, int skip = 0)
+        public List<Models.FileInfo> Search(string keywords = "",int limit = 100, int skip = 0)
         {
+            if (keywords == null) keywords = string.Empty;
             return this.CurrentUser().Search(keywords, limit, skip);
         }
 

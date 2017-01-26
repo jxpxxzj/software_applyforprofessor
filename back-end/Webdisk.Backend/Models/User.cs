@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Webdisk.Backend.Helper;
 using Webdisk.Backend.Helpers;
 
 namespace Webdisk.Backend.Models
@@ -192,8 +194,8 @@ namespace Webdisk.Backend.Models
 
         public List<FileInfo> Search(string keywords, int limit, int skip)
         {
-            var result = FileHelper.FindFile(Files, f => f.Metadata.Name.Contains(keywords));
-            return result.GetRange(skip, limit);
+            var result = FileHelper.FindFile(Files, f => TextHelper.IsMatch(f.Metadata.Name,keywords));
+            return result.GetRange(skip, limit > result.Count ? result.Count : limit);
         }
 
 

@@ -99,7 +99,15 @@ namespace Webdisk.Backend.Helpers
         /// <seealso cref="https://mongodb.github.io/mongo-csharp-driver/2.2/reference/gridfs/deletingandrenamingfiles/"/>
         public static void Delete(ObjectId objectId)
         {
-            MongoInstance.Bucket.Delete(objectId);
+            try
+            {
+                MongoInstance.Bucket.Delete(objectId);
+            }
+            catch 
+            {
+
+            }
+            
         }
     }
 }

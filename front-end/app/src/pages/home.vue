@@ -3,13 +3,13 @@
         <el-row class="home-toolbar-container">
             <el-col :span="16">
                 <el-button type="primary" @click="uploadVisible = true">上传<i class="el-icon-upload el-icon--right"></i></el-button>
-                <el-button @click="openCreateFolder">新建文件夹</el-button>
-                <el-button @click="fetchData">刷新</el-button>
+                <el-button @click="openCreateFolder" v-if="!inSearch">新建文件夹</el-button>
+                <el-button @click="fetchData" v-if="!inSearch">刷新</el-button>
                 <el-button @click="openMenu">更多</el-button>
             </el-col>
             <el-col :span="8">
                 <el-input placeholder="请输入关键词" v-model="keywords">
-                    <el-button slot="append" icon="search"></el-button>
+                    <el-button slot="append" icon="search" @click="handleSearch"></el-button>
                 </el-input>
             </el-col>
         </el-row>
@@ -17,12 +17,13 @@
             <span>
                 <span v-if="parent != '000000000000000000000000'">
                     <el-button size="small" @click="folderClick(parent)">向上</el-button>
+                    <el-button size="small" @click="folderClick(rootFolder)">根目录</el-button>
                 </span>
                 <span v-else>
                     <el-button size="small" :disabled="true">向上</el-button>
                 </span>
             </span>
-            {{ currentFolder }}
+            &nbsp;&nbsp;{{ currentFolder }}
         </el-row>          
         <el-row class="home-data-container">
             <el-table :data="fileData" border style="width: 100%" v-loading.body="fileLoading" element-loading-text="拼命加载中" :default-sort = "{prop: 'IsFolder', order: 'descending'}">
@@ -146,6 +147,8 @@ export default {
             aboutVisible: false,
             settingsVisible:false,
             folder:'14d1908575be46c2bc4e01c2',
+            rootFolder:'14d1908575be46c2bc4e01c2',
+            inSearch: false,
             fileLoading: true,
             menu: null,
             process: window.process,
@@ -180,6 +183,7 @@ export default {
             this.$http.get("http://localhost:7308/api/File/GetFolder?objectId=" + fo)
             .then((response) => {
                 const result = response.json().then((value) => {
+                    this.inSearch = false;
                     this.fileData = value.ChildFiles;
                     this.currentFolder = value.Metadata.Name;
                     this.parent = value.Parent;
@@ -306,6 +310,22 @@ export default {
         settings_notification(value) {
             this.enableNotification = value;
             this.$store.commit('setEnableNotification',this.enableNotification);
+        },
+        handleSearch() {
+            this.fileLoading = true;
+            this.$http.get('http://localhost:7308/api/File/Search?keywords=' + this.keywords)
+            .then((response) => {
+                const result = response.json().then((value) => {
+                    this.inSearch = true;
+                    this.fileData = value;
+                    this.parent = this.rootFolder;
+                    this.currentFolder = '搜索: ' + this.keywords;
+                });
+                this.fileLoading = false;
+            })
+            .catch(() => {
+
+            });
         }
     }
 }

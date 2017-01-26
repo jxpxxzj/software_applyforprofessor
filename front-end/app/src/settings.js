@@ -19,9 +19,8 @@ export default {
                 if (hasKey) {
                     state.$storage.get('userSettings', (error, data) => {
                         if (error) {
-                            console.log(error);
+                            console.error(error);
                         } ; // should be null or undefined so ignore it
-                        console.log(data);
                         state.enableNotification = data.enableNotification;
                         state.downloadPath = data.downloadPath;
                     });
@@ -34,8 +33,7 @@ export default {
                 downloadPath: state.downloadPath
             }, (error) => {
                 if (error) {
-                    console.error('saveerr');
-                    console.log(error);
+                    console.error(error);
                 };
             });
         },
