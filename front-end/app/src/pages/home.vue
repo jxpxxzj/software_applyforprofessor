@@ -95,7 +95,7 @@
                         <el-col :span="9">
                             <el-button @click="settings_select">浏览...</el-button>
                             <el-button @click="settings_defaultPath">默认路径</el-button>
-                            <el-button @click="openLink('this.$store.state.settings.downloadPath')">打开文件夹</el-button>
+                            <el-button @click="openLink($store.state.settings.downloadPath)">打开文件夹</el-button>
                         </el-col>
                     </el-row>
                 </el-tab-pane>
@@ -223,12 +223,14 @@ export default {
         upload_onsuccess (response, file, fileList) {
             this.$electron.remote.getCurrentWindow().setProgressBar(0);  
             if(this.$store.state.settings.enableNotification) {
-                const n = new window.Notification('Webdisk', { body: '上传完成' });
+                console.log(file);
+                const n = new window.Notification('Webdisk', { body: '上传完成: ' + file.name});
                 n.onclick = () => {};
             }
             this.fetchData();
         },
         handleDownload(index,row) {
+            let filename = '';
             this.$progress(this.$request('http://jxjxj.blumia.cn:81/api/File/Download?objectId=' + row.Id))
             .auth('Parry', '123456', true)
             .on( 'response', (res) => {
@@ -237,11 +239,11 @@ export default {
                 const match = contentDisposition && contentDisposition.match(/(filename=|filename\*='')(.*)$/);
                 const fnt = match && match[2] || 'default-filename.out';
                 const orif = fnt.split(';')[0];
-                let filename = orif;
+                filename = orif;
                 if (orif.indexOf('=?utf-8?B?') !== -1)
                     filename = Base64.decode(orif.replace('=?utf-8?B?','').replace('=?=','')).replace('\u0000','');
                 const fws = this.$fs.createWriteStream(this.$path.join(this.$store.state.settings.downloadPath,filename));
-                res.pipe( fws );
+                res.pipe(fws);
              })
             .on('progress', (state) => {
                 if (state.percent !== undefined) {
@@ -256,7 +258,7 @@ export default {
                 row.progress = 100;
                 this.$electron.remote.getCurrentWindow().setProgressBar(0);
                 if(this.$store.state.settings.enableNotification) {
-                    const n = new window.Notification('Webdisk', { body: '下载完成' });
+                    const n = new window.Notification('Webdisk', { body: '下载完成: ' + filename });
                     n.onclick = () => {};        
                 }
             });

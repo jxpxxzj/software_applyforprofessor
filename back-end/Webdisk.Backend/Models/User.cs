@@ -201,7 +201,7 @@ namespace Webdisk.Backend.Models
         /// <returns>符合条件的文件列表</returns>
         public List<FileInfo> Search(string keywords, int limit, int skip)
         {
-            var result = FileHelper.FindFile(Files, f => TextHelper.IsMatch(f.Metadata.Name,keywords));
+            var result = FileHelper.FindFile(Files, f => TextHelper.IsMatch(f.Metadata.Name,keywords) || f.Metadata.Name.ToLower().Contains(keywords.ToLower()));
             return result.GetRange(skip, limit > result.Count ? result.Count : limit);
         }
 
