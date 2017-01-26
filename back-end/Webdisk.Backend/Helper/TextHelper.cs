@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Webdisk.Backend.Helper
+﻿namespace Webdisk.Backend.Helper
 {
     /// <summary>
     /// 文本辅助类
@@ -16,8 +11,9 @@ namespace Webdisk.Backend.Helper
         /// <param name="text"></param>
         /// <param name="pattern"></param>
         /// <param name="ignoreCase"></param>
-        /// <returns></returns>
-        public static bool IsMatch(string text, string pattern,bool ignoreCase = true)
+        /// <returns>是否匹配</returns>
+        /// <seealso cref="http://blog.csdn.net/wumuzi520/article/details/7378371"/>
+        public static bool IsMatch(string text, string pattern, bool ignoreCase = true)
         {
             string pText, pPattern;
             if (ignoreCase)
@@ -32,15 +28,15 @@ namespace Webdisk.Backend.Helper
             }
             var nStr = pText.Length;
             var nPatt = pPattern.Length;
-            var pTable = new int[nStr+1,nPatt+1];
+            var pTable = new int[nStr + 1, nPatt + 1];
             if (pPattern[0] == '*')
             {
                 for (var i = 0; i <= nPatt; ++i)
                 {
-                    pTable[0,i] = 1;
+                    pTable[0, i] = 1;
                 }
             }
-            pTable[0,0] = 1;
+            pTable[0, 0] = 1;
 
             for (var j = 1; j <= nPatt; ++j)
             {
@@ -48,17 +44,17 @@ namespace Webdisk.Backend.Helper
                 {
                     if ((pPattern[j - 1] == '?' && pText[i - 1] != '\0') || pPattern[j - 1] == pText[i - 1])
                     {
-                        pTable[i,j] = pTable[i - 1,j - 1];
+                        pTable[i, j] = pTable[i - 1, j - 1];
                     }
                     else if (pPattern[j - 1] == '*')
                     {
-                        if (pTable[i,j - 1] == 1 || pTable[i - 1,j] == 1 || pTable[i - 1,j - 1] == 1)
-                            pTable[i,j] = 1;
+                        if (pTable[i, j - 1] == 1 || pTable[i - 1, j] == 1 || pTable[i - 1, j - 1] == 1)
+                            pTable[i, j] = 1;
                     }
                 }
             }
 
-            var ret = pTable[nStr,nPatt] == 1 ? true : false;
+            var ret = pTable[nStr, nPatt] == 1 ? true : false;
             return ret;
         }
     }

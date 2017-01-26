@@ -26,6 +26,7 @@ namespace Webdisk.Backend.Models
         /// </summary>
         public DateTime UploadTime;
     }
+
     /// <summary>
     /// 文件
     /// </summary>
@@ -88,6 +89,10 @@ namespace Webdisk.Backend.Models
             return folder;
         }
 
+        /// <summary>
+        /// 创建不含子文件列表的深拷贝
+        /// </summary>
+        /// <returns>文件信息</returns>
         public FileInfo CreateNonChildFileInfo()
         {
             var f = new FileInfo()

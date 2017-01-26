@@ -24,6 +24,7 @@ namespace Webdisk.Backend.Helpers
             var id = await MongoInstance.Bucket.UploadFromBytesAsync(filename, data);
             return id;
         }
+
         /// <summary>
         /// 将文件上传至 GridFS.
         /// </summary>
@@ -36,6 +37,7 @@ namespace Webdisk.Backend.Helpers
             var id = await MongoInstance.Bucket.UploadFromStreamAsync(filename, stream);
             return id;
         }
+
         /// <summary>
         /// 将文件上传至 GridFS.
         /// </summary>
@@ -103,11 +105,11 @@ namespace Webdisk.Backend.Helpers
             {
                 MongoInstance.Bucket.Delete(objectId);
             }
-            catch 
+            catch
             {
 
             }
-            
+
         }
     }
 }

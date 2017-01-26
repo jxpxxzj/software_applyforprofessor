@@ -26,6 +26,7 @@ namespace Webdisk.Backend.Systems
                 HandleUnauthorizedRequest(actionContext);
             }
         }
+
         protected override void HandleUnauthorizedRequest(HttpActionContext actionContext)
         {
             var challengeMessage = new HttpResponseMessage(HttpStatusCode.Unauthorized);

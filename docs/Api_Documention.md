@@ -217,12 +217,20 @@
 #### 响应数据
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |
-| fileList | array(FileInfo) | 目标文件夹的文件列表 |
-| -name | string | 文件名 |
-| -objectId | string | 文件ID |
-| -isFolder | boolean | 是否为文件夹 |
-| -size | int | 文件大小 |
-| -uploadTime | string | 上传时间 | 
+| Id | string | 目标文件夹 ID |
+| IsFolder | boolean | 是否为文件夹 |
+| Metadata | object(FileMetadata) | 元信息 |
+| -- Name | string | 文件夹名 |
+| -- Size | int | 文件大小, 不适用于文件夹 |
+| -- UploadTime | DateTime | 文件夹建立时间 |
+| ChildFiles | array(FileInfo) | 目标文件夹的文件列表 |
+| -- Id | string | 文件夹 ID |
+| -- IsFolder | boolean | 是否为文件夹 |
+| -- Metadata | object(FileMetadata) | 元信息 |
+| ---- Name | string | 文件夹名 |
+| ---- Size | int | 文件大小, 不适用于文件夹 |
+| ---- UploadTime | DateTime | 文件夹建立时间 |
+| ---- ChildFiles | array(FileInfo) | 应为空, 子文件列表 |
 
 ### File/Copy
 复制文件, 可以复制文件或文件夹.
@@ -238,13 +246,20 @@
 #### 响应数据
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |
-| fileList | array(FileInfo) | 目标文件夹的文件列表 |
-| -name | string | 文件名 |
-| -objectId | string | 文件ID |
-| -isFolder | boolean | 是否为文件夹 |
-| -size | int | 文件大小 |
-| -uploadTime | string | 上传时间 | 
-
+| Id | string | 目标文件夹 ID |
+| IsFolder | boolean | 是否为文件夹 |
+| Metadata | object(FileMetadata) | 元信息 |
+| -- Name | string | 文件夹名 |
+| -- Size | int | 文件大小, 不适用于文件夹 |
+| -- UploadTime | DateTime | 文件夹建立时间 |
+| ChildFiles | array(FileInfo) | 目标文件夹的文件列表 |
+| -- Id | string | 文件夹 ID |
+| -- IsFolder | boolean | 是否为文件夹 |
+| -- Metadata | object(FileMetadata) | 元信息 |
+| ---- Name | string | 文件夹名 |
+| ---- Size | int | 文件大小, 不适用于文件夹 |
+| ---- UploadTime | DateTime | 文件夹建立时间 |
+| ---- ChildFiles | array(FileInfo) | 应为空, 子文件列表 |
 
 ### File/CreateFolder
 创建新文件夹.
@@ -284,17 +299,18 @@
 #### 请求参数
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |
-| keyWords | string | 关键词 |
+| keywords | string | 关键词, 支持使用 * 和 ? 作为通配符 |
 | limit | int | 搜索结果数, 默认为100 |
 | skip | int | 跳过前若干个结果, 默认为0, 用于实现分页 |
 #### 响应数据
 | 参数名称 | 类型 | 描述 |
 | ------- | ---- | --- |
-| fileList | array(FileInfo) | 符合要求的文件列表 |
-| -name | string | 文件名 |
-| -objectId | string | 文件ID |
-| -isFolder | boolean | 是否为文件夹 |
-| -parentId | string | 所在文件夹ID |
-| -parentName | string | 所在文件夹名称 |
-| -size | int | 文件大小 |
-| -uploadTime | string | 上传时间 | 
+| Id | string | 文件夹 ID |
+| IsFolder | boolean | 是否为文件夹 |
+| Metadata | object(FileMetadata) | 元信息 |
+| -- Name | string | 文件夹名 |
+| -- Size | int | 文件大小, 不适用于文件夹 |
+| -- UploadTime | DateTime | 文件夹建立时间 |
+| -- ChildFiles | array(FileInfo) | 应为空, 子文件列表 |
+#### 请参阅
+[动态规划——通配符匹配算法 - wumuzi520的专栏 - 博客频道 - CSDN.NET](http://blog.csdn.net/wumuzi520/article/details/7378371)

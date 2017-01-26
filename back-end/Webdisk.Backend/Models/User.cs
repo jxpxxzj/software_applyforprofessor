@@ -192,13 +192,18 @@ namespace Webdisk.Backend.Models
             }
         }
 
+        /// <summary>
+        /// 搜索文件
+        /// </summary>
+        /// <param name="keywords">关键词</param>
+        /// <param name="limit">结果限制</param>
+        /// <param name="skip">跳过结果数</param>
+        /// <returns>符合条件的文件列表</returns>
         public List<FileInfo> Search(string keywords, int limit, int skip)
         {
             var result = FileHelper.FindFile(Files, f => TextHelper.IsMatch(f.Metadata.Name,keywords));
             return result.GetRange(skip, limit > result.Count ? result.Count : limit);
         }
-
-
 
         /// <summary>
         /// 保存用户数据

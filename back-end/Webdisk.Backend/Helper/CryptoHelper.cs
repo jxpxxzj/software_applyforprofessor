@@ -6,88 +6,30 @@ using System.Text;
 
 namespace Webdisk.Backend.Helpers
 {
+    /// <summary>
+    /// 加密辅助类
+    /// </summary>
     public static class CryptoHelper
     {
         private static MD5 md5Hasher = MD5.Create();
         private static UTF8Encoding utf8Encoding = new UTF8Encoding();
         private static NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
 
-        public static string EncryptString(string message, byte[] key, ref string iv)
-        {
-            string encrypted = null;
-            using (var rj = new RijndaelManaged())
-            {
-                rj.Key = key;
-                rj.BlockSize = 256;
-                rj.Mode = CipherMode.CBC;
-
-                if (iv != null)
-                    rj.IV = Convert.FromBase64String(iv);
-                else
-                {
-                    rj.GenerateIV();
-                    iv = Convert.ToBase64String(rj.IV);
-                }
-
-                try
-                {
-                    var ms = new MemoryStream();
-
-                    using (var cs = new CryptoStream(ms, rj.CreateEncryptor(key, rj.IV), CryptoStreamMode.Write))
-                    {
-                        using (var sw = new StreamWriter(cs))
-                        {
-                            sw.Write(message);
-                            sw.Close();
-                        }
-                        cs.Close();
-                    }
-                    byte[] encoded = ms.ToArray();
-                    encrypted = Convert.ToBase64String(encoded);
-
-                    ms.Close();
-                }
-                finally
-                {
-                    rj.Clear();
-                }
-            }
-
-            return encrypted;
-        }
-
-        public static string GetMd5(string path)
-        {
-            lock (md5Hasher)
-            {
-                if (!File.Exists(path)) return string.Empty;
-
-                try
-                {
-                    using (var s = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        byte[] data = md5Hasher.ComputeHash(s);
-
-                        var sBuilder = new StringBuilder();
-
-                        for (int i = 0; i < data.Length; i++)
-                            sBuilder.Append(data[i].ToString("x2"));
-
-                        return sBuilder.ToString();
-                    }
-                }
-                catch
-                {
-                    return string.Empty;
-                }
-            }
-        }
-
+        /// <summary>
+        /// 获得 MD5 Hash 后的字符串
+        /// </summary>
+        /// <param name="instr">原始字符串</param>
+        /// <returns>Hash</returns>
         public static string GetMd5String(string instr)
         {
             return GetMd5String(utf8Encoding.GetBytes(instr));
         }
 
+        /// <summary>
+        /// 获得 MD5 Hash 后的字节数组
+        /// </summary>
+        /// <param name="data">原始字节数组</param>
+        /// <returns>Hash</returns>
         public static string GetMd5String(byte[] data)
         {
             lock (md5Hasher)
@@ -97,7 +39,7 @@ namespace Webdisk.Backend.Helpers
                     // Convert the input string to a byte array and compute the hash.
                     data = md5Hasher.ComputeHash(data);
                 }
-                catch 
+                catch
                 {
                     return "fail";
                 }
@@ -108,49 +50,6 @@ namespace Webdisk.Backend.Helpers
                 data[i].ToString("x2", nfi).CopyTo(0, str, i * 2, 2);
 
             return new string(str);
-        }
-
-        public static byte[] GetMd5ByteArray(byte[] data)
-        {
-            lock (md5Hasher)
-            {
-                try
-                {
-                    // Convert the input string to a byte array and compute the hash.
-                    data = md5Hasher.ComputeHash(data);
-                }
-                catch
-                {
-                    return new byte[0];
-                }
-            }
-
-            return data;
-        }
-
-        public static byte[] GetMd5ByteArrayString(string instr)
-        {
-
-            byte[] data;
-
-            lock (md5Hasher)
-            {
-                try
-                {
-                    // Convert the input string to a byte array and compute the hash.
-                    data = md5Hasher.ComputeHash(utf8Encoding.GetBytes(instr));
-                }
-                catch 
-                {
-                    return null;
-                }
-            }
-            // Create a new Stringbuilder to collect the bytes
-            // and create a string.
-            //StringBuilder sBuilder = new StringBuilder();
-
-            return data;
-
         }
     }
 }

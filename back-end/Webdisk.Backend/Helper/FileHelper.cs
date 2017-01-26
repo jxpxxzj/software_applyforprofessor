@@ -76,6 +76,12 @@ namespace Webdisk.Backend.Helpers
             return null;
         }
 
+        /// <summary>
+        /// 以特定的条件递归搜索文件
+        /// </summary>
+        /// <param name="folder">待搜索文件夹</param>
+        /// <param name="predicate">断言条件</param>
+        /// <returns>符合条件的文件列表</returns>
         public static List<FileInfo> FindFile(FileInfo folder, Predicate<FileInfo> predicate)
         {
             var list = new List<FileInfo>();
