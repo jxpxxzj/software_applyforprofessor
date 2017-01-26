@@ -4,7 +4,7 @@
             <el-col :span="16">
                 <el-button type="primary" @click="uploadVisible = true">上传<i class="el-icon-upload el-icon--right"></i></el-button>
                 <el-button @click="openCreateFolder" v-if="!inSearch">新建文件夹</el-button>
-                <el-button @click="fetchData" v-if="!inSearch">刷新</el-button>
+                <el-button @click="fetchData(this.folder)" v-if="!inSearch">刷新</el-button>
                 <el-button @click="openMenu">更多</el-button>
             </el-col>
             <el-col :span="8">
@@ -54,37 +54,33 @@
                         <el-button v-if="!scope.row.IsFolder" size="small" type="primary" @click="handleDownload(scope.$index, scope.row)">下载</el-button>
                         <el-button size="small" @click="handleRename(scope.$index,scope.row)">重命名</el-button>
                         <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                        <el-progress id="prog" :percentage="scope.row.progress" v-if="scope.row.progress !== 0 && scope.row.progress !== 100"></el-progress>
+                        <el-progress :percentage="scope.row.progress" v-if="scope.row.progress !== 0 && scope.row.progress !== 100"></el-progress>
                         <el-progress :percentage="scope.row.progress" v-if="scope.row.progress !== 0 && scope.row.progress === 100.0" status="success"></el-progress>
                     </template>
                 </el-table-column>
             </el-table>
         </el-row>
-
         <el-dialog title="文件上传" v-model="uploadVisible" size="medium">
             <el-upload
-                action="http://localhost:7308/api/File/Upload"
-                :on-progress="upload_onprogress"
-                :on-success="upload_onsuccess"
-                :multiple=true
-                type="drag"
-                :data="{ folder: this.folder }"
-                :headers="{ Authorization: 'Basic UGFycnk6MTIzNDU2'}"
-            >
+            action="http://localhost:7308/api/File/Upload"
+            :on-progress="upload_onprogress"
+            :on-success="upload_onsuccess"
+            :multiple=true
+            type="drag"
+            :data="{ folder: this.folder }"
+            :headers="{ Authorization: 'Basic UGFycnk6MTIzNDU2'}">
                 <i class="el-icon-upload"></i>
                 <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
             </el-upload>
         </el-dialog>
-
         <el-dialog title="关于" v-model="aboutVisible" size="medium">
             <h2 class="home-about-title">Webdisk</h2>
-            Powered by <a class="home-about-link" @click="openLink('https://github.com/jxpxxzj/vue-desktop-framework')">vue-desktop-framework</a><br>
+            Powered by <a href="#" class="home-about-link" @click="openLink('https://github.com/jxpxxzj/vue-desktop-framework')">vue-desktop-framework</a><br>
             Version {{ this.$electron.remote.app.getVersion() }}<br>
             Shell {{ process.versions['atom-shell'] }}<br>
             Renderer {{ process.versions.chrome }}<br>
             Node {{ process.versions.node }}<br>
         </el-dialog>
-
         <el-dialog title="设置" v-model="settingsVisible" size="full" v-on:open="onSettingsOpen" v-on:close="onSettingsClose">
             <el-tabs>
                 <el-tab-pane label="下载" name="first">
@@ -109,39 +105,37 @@
     </div>
 </template>
 <style scoped>
-.home-toolbar-container
-{
+.home-toolbar-container {
     padding-top: 15px;
     padding-bottom: 15px;
     padding-left: 10px;
     padding-right: 10px;
     position: fixed;
     z-index: 999;
-    background-color: #f9fafc;
+    background-color: #EFF2F7;
 }
-.home-path-container
-{
+.home-path-container {
     padding-left: 10px;
     margin-top: 66px;
-    height: 20px;
+    height: 35px;
     min-height: 20px;
     width: 100%;
     position: fixed;
     z-index: 999;
-    background-color: #f9fafc;
+    background-color: #EFF2F7;
 }
-.home-data-container
-{
-    padding-top:110px;
+.home-data-container {
+    padding-top: 110px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
-.home-about-title
-{
+.home-about-title {
     color:#1d8ce0;
 }
-.home-about-link
-{
+.home-about-link {
     color:#1d8ce0;
-    text-decoration: underline;
+    font-weight: bold;
+    text-decoration: none;
 }
 </style>
 <script>
@@ -168,9 +162,6 @@ export default {
     },
     created() {
         this.fetchData(this.folder);
-        if(this._fileProgress === undefined) {
-            this._fileProgress = {};
-        }
         const remote = this.$electron.remote;
         const Menu = remote.Menu;
         const MenuItem = remote.MenuItem;
@@ -222,9 +213,7 @@ export default {
                     this.fetchData();        
                 })
             })
-            .catch(() => {
-
-            });
+            .catch(() => {});
         },
         upload_onprogress(event, file, fileList) {
             this.$electron.remote.getCurrentWindow().setProgressBar(event.percent / 100);        
@@ -233,9 +222,7 @@ export default {
             this.$electron.remote.getCurrentWindow().setProgressBar(0);  
             if(this.$store.state.settings.enableNotification) {
                 const n = new window.Notification('Webdisk', { body: '上传完成' });
-                n.onclick = () => {
-                    
-                };
+                n.onclick = () => {};
             }
             this.fetchData();
         },
@@ -256,10 +243,6 @@ export default {
                     row.progress = Math.round(state.percent * 100.0);
                     this.$electron.remote.getCurrentWindow().setProgressBar(state.percent);
                 }
-                //this.speed = (state.speed / 1000).toFixed(2);
-                //if (state.time.remaining !== null) {
-                    //this.remaining = state.time.remaining.toFixed(2);
-                //}
             })
             .on('error', (error) => {
                 console.error(error);
@@ -269,12 +252,9 @@ export default {
                 this.$electron.remote.getCurrentWindow().setProgressBar(0);
                 if(this.$store.state.settings.enableNotification) {
                     const n = new window.Notification('Webdisk', { body: '下载完成' });
-                    n.onclick = () => {
-                        
-                    };        
+                    n.onclick = () => {};        
                 }
             });
-            
         },
         handleRename(index,row) {
             this.$prompt('请输入新文件名', '提示', {
@@ -292,9 +272,7 @@ export default {
                     this.fetchData();        
                 })
             })
-            .catch(() => {
-
-            });
+            .catch(() => {});
         },
         handleDelete(index, row) {
             this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -314,9 +292,7 @@ export default {
                     this.fetchData();        
                 }) 
             })
-            .catch(() => {
-
-            });
+            .catch(() => {});
         },
         folderClick(id) {
             this.parent = this.folder;
@@ -371,9 +347,7 @@ export default {
                 });
                 this.fileLoading = false;
             })
-            .catch(() => {
-
-            });
+            .catch(() => {});
         },
         openLink(url) {
             this.$electron.shell.openExternal(url);

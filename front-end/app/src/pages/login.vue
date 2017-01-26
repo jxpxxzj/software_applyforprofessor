@@ -1,7 +1,6 @@
 <template>
     <div class="login-background">
         <div class="login-container">
-            <router-link :to="{ path:'/'}">Index</router-link>
             <el-row type="flex" justify="center">
                 <img src="../assets/cloud_disk.png" class="login-logo">
             </el-row>
@@ -10,11 +9,13 @@
                     <template slot="prepend">用户名</template>
                 </el-input>
             </el-row>
+            <el-row>&nbsp;</el-row>
             <el-row>
                 <el-input size="large" class="login-input-password" type="password" placeholder="123456" :disabled=true>
                     <template slot="prepend">密码</template>
                  </el-input>
             </el-row>
+            <el-row>&nbsp;</el-row>
             <el-row type="flex" justify="space-around">
                 <el-button size="large">注册</el-button>
                 <el-button size="large" type="primary" @click="login">登录</el-button>

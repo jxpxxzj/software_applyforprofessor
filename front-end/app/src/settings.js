@@ -12,7 +12,7 @@ export default {
         },
         initSettings (state) {
             state.$storage.has('userSettings', (error, hasKey) => {
-                if (error) { // Here is all default and fallback settings
+                if (error) { // Use default and fallback settings
                     state.enableNotification = false;
                     state.downloadPath = state.$electron.remote.app.getPath('downloads');
                 }
@@ -20,7 +20,7 @@ export default {
                     state.$storage.get('userSettings', (error, data) => {
                         if (error) {
                             console.error(error);
-                        } ; // should be null or undefined so ignore it
+                        }
                         state.enableNotification = data.enableNotification;
                         state.downloadPath = data.downloadPath;
                     });

@@ -6,7 +6,7 @@ export default {
         Vue.prototype.$electron = require('electron');
 
         // Node.js modules
-        // Considering move into Main process?
+        // Consider move into Main process?
         Vue.prototype.$fs = require('fs-extra');
         Vue.prototype.$path = require('path');
         Vue.prototype.$os = require('os');
