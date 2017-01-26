@@ -64,7 +64,7 @@
         <!-- Dialogs -->
         <el-dialog title="文件上传" v-model="uploadVisible" size="medium">
             <el-upload
-            action="http://localhost:7308/api/File/Upload"
+            action="http://jxjxj.blumia.cn:81/api/File/Upload"
             :on-progress="upload_onprogress"
             :on-success="upload_onsuccess"
             :multiple=true
@@ -187,7 +187,7 @@ export default {
     methods: {
         fetchData(fo = this.folder) { 
             this.fileLoading = true;
-            this.$http.get("http://localhost:7308/api/File/GetFolder?objectId=" + fo)
+            this.$http.get("http://jxjxj.blumia.cn:81/api/File/GetFolder?objectId=" + fo)
             .then((response) => {
                 const result = response.json().then((value) => {
                     this.inSearch = false;
@@ -206,7 +206,7 @@ export default {
                 inputErrorMessage: '文件夹名格式不正确'
                 })
             .then(({ value }) => {
-                this.$http.get('http://localhost:7308/api/File/CreateFolder?objectId=' + this.folder + '&name=' + value)
+                this.$http.get('http://jxjxj.blumia.cn:81/api/File/CreateFolder?objectId=' + this.folder + '&name=' + value)
                 .then((response) => {
                     this.$message({
                         type: 'success',
@@ -229,7 +229,7 @@ export default {
             this.fetchData();
         },
         handleDownload(index,row) {
-            this.$progress(this.$request('http://localhost:7308/api/File/Download?objectId=' + row.Id))
+            this.$progress(this.$request('http://jxjxj.blumia.cn:81/api/File/Download?objectId=' + row.Id))
             .auth('Parry', '123456', true)
             .on( 'response', (res) => {
                 row.progress = 1;
@@ -265,7 +265,7 @@ export default {
                 inputPlaceholder: row.Metadata.Name
                 })
             .then(({ value }) => {
-                this.$http.get('http://localhost:7308/api/File/Rename?objectId=' + row.Id + '&newFilename=' + value)
+                this.$http.get('http://jxjxj.blumia.cn:81/api/File/Rename?objectId=' + row.Id + '&newFilename=' + value)
                 .then((response) => {
                     this.$message({
                         type: 'success',
@@ -283,7 +283,7 @@ export default {
                 type: 'warning'
             })
             .then(() => {
-                this.$http.get('http://localhost:7308/api/File/Delete?objectId=' + row.Id)
+                this.$http.get('http://jxjxj.blumia.cn:81/api/File/Delete?objectId=' + row.Id)
                 .then((response) => {
                     this.$message({
                         type: 'success',
@@ -339,7 +339,7 @@ export default {
         },
         handleSearch() {
             this.fileLoading = true;
-            this.$http.get('http://localhost:7308/api/File/Search?keywords=' + this.keywords)
+            this.$http.get('http://jxjxj.blumia.cn:81/api/File/Search?keywords=' + this.keywords)
             .then((response) => {
                 const result = response.json().then((value) => {
                     this.inSearch = true;

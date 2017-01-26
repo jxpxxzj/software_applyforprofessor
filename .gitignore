@@ -55,3 +55,6 @@ jspm_packages
 
 # electron-packager directory
 package
+/back-end/Webdisk.Backend/obj/Release
+/back-end/Webdisk.Backend/Properties/PublishProfiles/local.pubxml
+/back-end/Webdisk.Backend/Properties/PublishProfiles
