@@ -11,7 +11,7 @@
             </el-row>
             <el-row>&nbsp;</el-row>
             <el-row>
-                <el-input size="large" class="login-input-password" type="password" placeholder="Aqours" :disabled=true>
+                <el-input size="large" class="login-input-password" type="password" placeholder="******" :disabled=true>
                     <template slot="prepend">密码</template>
                  </el-input>
             </el-row>

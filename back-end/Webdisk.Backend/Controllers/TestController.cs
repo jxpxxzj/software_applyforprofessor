@@ -4,6 +4,7 @@ using Webdisk.Backend.Models;
 
 namespace Webdisk.Backend.Controllers
 {
+#if DEBUG
     public class TestController : ApiController
     {
         [HttpGet]
@@ -15,4 +16,5 @@ namespace Webdisk.Backend.Controllers
             return user.GetFolder(user.Files.Id);
         }
     }
+#endif
 }
