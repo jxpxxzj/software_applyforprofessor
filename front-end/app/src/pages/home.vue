@@ -236,7 +236,10 @@ export default {
                 const contentDisposition = res.headers['content-disposition'];
                 const match = contentDisposition && contentDisposition.match(/(filename=|filename\*='')(.*)$/);
                 const fnt = match && match[2] || 'default-filename.out';
-                const filename = fnt.split(';')[0];
+                const orif = fnt.split(';')[0];
+                let filename = orif;
+                if (orif.indexOf('=?utf-8?B?') !== -1)
+                    filename = Base64.decode(orif.replace('=?utf-8?B?','').replace('=?=','')).replace('\u0000','');
                 const fws = this.$fs.createWriteStream(this.$path.join(this.$store.state.settings.downloadPath,filename));
                 res.pipe( fws );
              })
