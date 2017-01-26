@@ -5,6 +5,7 @@
                 <el-button type="primary" @click="uploadVisible = true">上传<i class="el-icon-upload el-icon--right"></i></el-button>
                 <el-button @click="openCreateFolder">新建文件夹</el-button>
                 <el-button @click="fetchData">刷新</el-button>
+                <el-button @click="openMenu">更多</el-button>
             </el-col>
             <el-col :span="8">
                 <el-input placeholder="请输入关键词" v-model="keywords">
@@ -55,6 +56,7 @@
                 </el-table-column>
             </el-table>
         </el-row>
+
         <el-dialog title="文件上传" v-model="uploadVisible" size="medium">
             <el-upload
                 action="http://localhost:7308/api/File/Upload"
@@ -68,6 +70,14 @@
                 <i class="el-icon-upload"></i>
                 <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
             </el-upload>
+        </el-dialog>
+
+        <el-dialog title="关于" v-model="aboutVisible" size="medium">
+            <h2 class="home-about-title">Webdisk</h2>
+            Version 1.0.0<br>
+            Shell {{ process.versions['atom-shell'] }}<br>
+            Renderer {{ process.versions.chrome }}<br>
+            Node {{ process.versions.node }}<br>
         </el-dialog>
     </div>
 </template>
@@ -97,6 +107,10 @@
 {
     padding-top:110px;
 }
+.home-about-title
+{
+    color:#1d8ce0;
+}
 </style>
 <script>
 export default {
@@ -107,12 +121,33 @@ export default {
             parent: '',
             keywords: '',
             uploadVisible: false,
+            aboutVisible: false,
             folder:'14d1908575be46c2bc4e01c2',
-            fileLoading: true
+            fileLoading: true,
+            menu: null,
+            process: window.process
         }
     },
     created() {
         this.fetchData(this.folder);
+        const remote = this.$electron.remote;
+        const Menu = remote.Menu;
+        const MenuItem = remote.MenuItem;
+        this.menu = new Menu();
+        const vm = this;
+        this.menu.append(new MenuItem({ label: '设置', click() { 
+                console.log('item 1 clicked'); 
+            } 
+        }));
+        this.menu.append(new MenuItem({ label: '显示开发者工具', click() { 
+                remote.getCurrentWindow().openDevTools();
+            } 
+        }));
+        this.menu.append(new MenuItem({ type: 'separator' }));
+        this.menu.append(new MenuItem({ label: '关于', click() { 
+                vm.aboutVisible = true;
+            } 
+        }));
     },
     methods: {
         fetchData(fo = this.folder) { 
@@ -120,7 +155,6 @@ export default {
             this.$http.get("http://localhost:7308/api/File/GetFolder?objectId=" + fo)
             .then((response) => {
                 const result = response.json().then((value) => {
-                    console.log(value);
                     this.fileData = value.ChildFiles;
                     this.currentFolder = value.Metadata.Name;
                     this.parent = value.Parent;
@@ -136,7 +170,6 @@ export default {
                 inputErrorMessage: '文件夹名格式不正确'
                 })
             .then(({ value }) => {
-                console.log(this.folder);
                 this.$http.get('http://localhost:7308/api/File/CreateFolder?objectId=' + this.folder + '&name=' + value)
                 .then((response) => {
                     this.$message({
@@ -154,7 +187,6 @@ export default {
             this.$electron.remote.getCurrentWindow().setProgressBar(event.percent / 100);        
         },
         upload_onsuccess (response, file, fileList) {
-            console.log(response);
             this.$electron.remote.getCurrentWindow().setProgressBar(0);  
             const n = new window.Notification('Webdisk', { body: '上传完成' });
             n.onclick = () => {
@@ -183,10 +215,12 @@ export default {
             });
         },
         folderClick(id) {
-            console.log(id);
             this.parent = this.folder;
             this.folder = id;
             this.fetchData();
+        },
+        openMenu() {
+            this.menu.popup(this.$electron.remote.getCurrentWindow(),293,51);
         }
     }
 }
