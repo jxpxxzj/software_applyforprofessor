@@ -17,7 +17,7 @@
             </el-row>
             <el-row>&nbsp;</el-row>
             <el-row type="flex" justify="space-around">
-                <el-button size="large">注册</el-button>
+                <el-button size="large":disabled=true>注册</el-button>
                 <el-button size="large" type="primary" @click="login">登录</el-button>
             </el-row>
         </div>
@@ -25,12 +25,6 @@
 </template>
 <script>
 export default {
-    data () {
-        return {
-            username: '',
-            password: '',
-        }
-    },
     methods: {
         login() {
             this.$router.push({ path: '/home'});

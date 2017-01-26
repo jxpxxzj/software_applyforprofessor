@@ -15,7 +15,7 @@
         </el-row>
         <el-row class="home-path-container">
             <span>
-                <span v-if="parent != '000000000000000000000000'">
+                <span v-if="parent != '000000000000000000000000'"> <!-- disabled when current folder is root -->
                     <el-button size="small" @click="folderClick(parent)">向上</el-button>
                     <el-button size="small" @click="folderClick(rootFolder)">根目录</el-button>
                 </span>
@@ -60,6 +60,8 @@
                 </el-table-column>
             </el-table>
         </el-row>
+        
+        <!-- Dialogs -->
         <el-dialog title="文件上传" v-model="uploadVisible" size="medium">
             <el-upload
             action="http://localhost:7308/api/File/Upload"
@@ -166,7 +168,7 @@ export default {
         const Menu = remote.Menu;
         const MenuItem = remote.MenuItem;
         this.menu = new Menu();
-        const vm = this;
+        const vm = this; // code scope is BrowserWindow in these fellow codes
         this.menu.append(new MenuItem({ label: '打开下载目录', click() { 
             vm.openLink(vm.$store.state.settings.downloadPath)
         }}));

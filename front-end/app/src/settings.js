@@ -1,18 +1,19 @@
 export default {
     state: {
-        enableNotification: false,
-        downloadPath: '',
+        enableNotification: false, // show system notification when some actions are completed
+        downloadPath: '', // where file will be put
         $storage: null,
         $electron: null
     },
     mutations: {
+        // save these into state so that Vuex.Settings could access them
         initStore (state, value) {
             state.$storage = value.storage;
             state.$electron = value.electron;
         },
         initSettings (state) {
             state.$storage.has('userSettings', (error, hasKey) => {
-                if (error) { // Use default and fallback settings
+                if (error) { // use default and fallback settings
                     state.enableNotification = false;
                     state.downloadPath = state.$electron.remote.app.getPath('downloads');
                 }
@@ -27,6 +28,7 @@ export default {
                 }
             });
         },
+        // jsons are in %Appdata%\Roaming\Webdisk\storage
         saveSettings (state) {
             state.$storage.set('userSettings', {
                 enableNotification: state.enableNotification,

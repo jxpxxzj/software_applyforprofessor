@@ -10,6 +10,7 @@ Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(Vuex);
 
+// should be rewrite, this base64 represents Parry:123456
 Vue.http.headers.common['Authorization'] = 'Basic UGFycnk6MTIzNDU2';
 
 // UI library
