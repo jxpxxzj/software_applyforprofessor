@@ -5,13 +5,13 @@
                 <img src="../assets/cloud_disk.png" class="login-logo">
             </el-row>
             <el-row>
-                <el-input size="large" class="login-input-username" placeholder="Parry" :disabled=true>
+                <el-input size="large" class="login-input-username" placeholder="Komorebi" :disabled=true>
                     <template slot="prepend">用户名</template>
                 </el-input>
             </el-row>
             <el-row>&nbsp;</el-row>
             <el-row>
-                <el-input size="large" class="login-input-password" type="password" placeholder="123456" :disabled=true>
+                <el-input size="large" class="login-input-password" type="password" placeholder="Aqours" :disabled=true>
                     <template slot="prepend">密码</template>
                  </el-input>
             </el-row>
